@@ -496,6 +496,6 @@ def get_pose_net(cfg, is_train, **kwargs):
     model = PoseHighResolutionNet(cfg, **kwargs)
 
     if is_train and cfg['MODEL']['INIT_WEIGHTS']:
-        model.init_weights(cfg['MODEL']['PRETRAINED'])
-
+        #model.init_weights(cfg['MODEL']['PRETRAINED'])
+        model.init_weights('/kaggle/input/hrnet-w32-36af842e-pth/hrnet_w32-36af842e.pth')
     return model
