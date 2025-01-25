@@ -23,8 +23,9 @@ import torch.nn as nn
 
 def create_logger(cfg, cfg_name, phase='train'):
     # root_output_dir = Path(cfg.OUTPUT_DIR)
-    root_output_dir = Path('output')
-    # set up logger
+    root_output_dir = Path('output')  # 将根目录设置为 'output'
+
+    # 如果根目录不存在，则创建
     if not root_output_dir.exists():
         print('=> creating {}'.format(root_output_dir))
         root_output_dir.mkdir()
@@ -35,29 +36,33 @@ def create_logger(cfg, cfg_name, phase='train'):
     model = cfg.MODEL.NAME
     cfg_name = os.path.basename(cfg_name).split('.')[0]
 
-    # final_output_dir = root_output_dir / dataset / model / cfg_name
-    final_output_dir = Path('output/' + cfg.OUTPUT_DIR)
+    # 修改 final_output_dir 使其指向合适的目录
+    final_output_dir = root_output_dir / dataset / model / cfg_name  # 使用路径拼接来指定输出路径
     print('=> creating {}'.format(final_output_dir))
-    final_output_dir.mkdir(parents=True, exist_ok=True)
+    final_output_dir.mkdir(parents=True, exist_ok=True)  # 创建目录及其父目录
 
+    # 日志文件命名
     time_str = time.strftime('%Y-%m-%d-%H-%M')
     log_file = '{}_{}_{}.log'.format(cfg_name, time_str, phase)
     final_log_file = final_output_dir / log_file
+
+    # 设置日志格式
     head = '%(asctime)-15s %(message)s'
-    logging.basicConfig(filename=str(final_log_file),
-                        format=head)
+    logging.basicConfig(filename=str(final_log_file), format=head)
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
+
+    # 控制台输出
     console = logging.StreamHandler()
     logging.getLogger('').addHandler(console)
 
-    # tensorboard_log_dir = Path(cfg.LOG_DIR) / dataset / model / \
-    #     (cfg_name + '_' + time_str)
+    # tensorboard 日志路径
     tensorboard_log_dir = final_output_dir / cfg.LOG_DIR
     print('=> creating {}'.format(tensorboard_log_dir))
     tensorboard_log_dir.mkdir(parents=True, exist_ok=True)
 
     return logger, str(final_output_dir), str(tensorboard_log_dir)
+
 
 
 def get_optimizer(cfg, model):
